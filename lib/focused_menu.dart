@@ -20,7 +20,7 @@ class FocusedMenuHolder extends StatefulWidget {
   final double bottomOffsetHeight;
   final double menuOffset;
   final TapMode tapMode;
-  final Function initData;
+  final Future initData;
 
   const FocusedMenuHolder(
       {Key key,
@@ -62,7 +62,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   _showMenu() async {
     getOffset();
-    initState();
+    await widget.initData;
     await Navigator.push(
         context,
         PageRouteBuilder(
