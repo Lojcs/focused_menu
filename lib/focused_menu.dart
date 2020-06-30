@@ -189,6 +189,7 @@ class FocusedMenuDetails extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
+                        if (menuItems[index] == null) return Center();
                         FocusedMenuItem item = menuItems[index];
                         Widget listItem = GestureDetector(
                             onTap: () {
@@ -214,9 +215,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                     ],
                                   ),
                                 )));
-                        if (item == null)
-                          return Center();
-                        else if (animateMenu) {
+                        if (animateMenu) {
                           return TweenAnimationBuilder(
                               builder: (context, value, child) {
                                 return Transform(
