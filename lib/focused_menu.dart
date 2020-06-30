@@ -203,32 +203,32 @@ class FocusedMenuDetails extends StatelessWidget {
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         FocusedMenuItem item = menuItems[index];
-                        Widget listItem = InkWell(
-                            onTap: () {
-                              Navigator.pop(context);
-                              item.onPressed();
-                            },
+                        Widget listItem = Container(
+                            alignment: Alignment.center,
+                            //margin: const EdgeInsets.only(bottom: 1),
+                            color: item.backgroundColor ?? Colors.white,
+                            height: itemExtent ?? 50.0,
                             child: Material(
                               color: Colors.transparent,
-                              child: Container(
-                                  alignment: Alignment.center,
-                                  //margin: const EdgeInsets.only(bottom: 1),
-                                  color: item.backgroundColor ?? Colors.white,
-                                  height: itemExtent ?? 50.0,
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0, horizontal: 14),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: <Widget>[
-                                        Expanded(child: item.title),
-                                        if (item.trailingIcon != null) ...[
-                                          item.trailingIcon
-                                        ]
-                                      ],
-                                    ),
-                                  )),
+                              child: InkWell(
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  item.onPressed();
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 10.0, horizontal: 14),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    children: <Widget>[
+                                      Expanded(child: item.title),
+                                      if (item.trailingIcon != null) ...[
+                                        item.trailingIcon
+                                      ]
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ));
                         if (animateMenu) {
                           return TweenAnimationBuilder(
