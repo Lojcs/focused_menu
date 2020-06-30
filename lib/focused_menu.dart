@@ -95,6 +95,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
     return Material(
       color: Colors.transparent,
       child: InkWell(
+          borderRadius: BorderRadius.all(Radius.circular(5.0)),
           key: containerKey,
           onTap: widget.tapMode == TapMode.onLongPress
               ? widget.action
