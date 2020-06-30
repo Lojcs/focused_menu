@@ -36,7 +36,7 @@ class FocusedMenuHolder extends StatefulWidget {
       this.bottomOffsetHeight,
       this.menuOffset,
       //Tap mode to open menu.
-      this.tapMode})
+      this.tapMode = TapMode.onLongPress})
       : super(key: key);
 
   @override
