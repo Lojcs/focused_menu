@@ -55,7 +55,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return InkWell(
         key: containerKey,
         onTap: widget.onPressed,
         onLongPress: () async {
@@ -238,10 +238,15 @@ class FocusedMenuDetails extends StatelessWidget {
             Positioned(
                 top: childOffset.dy,
                 left: childOffset.dx,
-                child: Container(
-                    width: childSize.width,
-                    height: childSize.height,
-                    child: child)),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.pop(context);
+                  },
+                  child: Container(
+                      width: childSize.width,
+                      height: childSize.height,
+                      child: child),
+                )),
           ],
         ),
       ),
