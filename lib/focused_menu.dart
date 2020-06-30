@@ -124,7 +124,7 @@ class FocusedMenuDetails extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-
+    menuItems.removeWhere((element) => element == null);
     final maxMenuHeight = size.height * 0.45;
     final listHeight = menuItems.length * (itemExtent ?? 50.0);
 
@@ -189,7 +189,6 @@ class FocusedMenuDetails extends StatelessWidget {
                       padding: EdgeInsets.zero,
                       physics: NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
-                        if (menuItems[index] == null) return Center();
                         FocusedMenuItem item = menuItems[index];
                         Widget listItem = GestureDetector(
                             onTap: () {
