@@ -259,7 +259,10 @@ class FocusedMenuDetails extends StatelessWidget {
                     Navigator.pop(context);
                   },
                   child: Container(
-                      color: menuItems.first.backgroundColor ?? Colors.white,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                        color: menuItems.first.backgroundColor ?? Colors.white,
+                      ),
                       width: childSize.width,
                       height: childSize.height,
                       child: child),
