@@ -220,10 +220,9 @@ class FocusedMenuDetails extends StatelessWidget {
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 8.0, horizontal: 14),
                                   child: Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
-                                      item.title,
+                                      Expanded(child: item.title),
                                       if (item.trailingIcon != null) ...[
                                         item.trailingIcon
                                       ]
