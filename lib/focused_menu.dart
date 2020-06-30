@@ -92,15 +92,18 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        key: containerKey,
-        onTap: widget.tapMode == TapMode.onLongPress
-            ? widget.action
-            : () async => await _showMenu(),
-        onLongPress: widget.tapMode == TapMode.onTap
-            ? widget.action
-            : () async => await _showMenu(),
-        child: Material(color: Colors.transparent, child: widget.child));
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+          key: containerKey,
+          onTap: widget.tapMode == TapMode.onLongPress
+              ? widget.action
+              : () async => await _showMenu(),
+          onLongPress: widget.tapMode == TapMode.onTap
+              ? widget.action
+              : () async => await _showMenu(),
+          child: widget.child),
+    );
   }
 }
 
