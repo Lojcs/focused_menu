@@ -55,39 +55,43 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-        key: containerKey,
-        onTap: widget.onPressed,
-        onLongPress: () async {
-          getOffset();
-          await Navigator.push(
-              context,
-              PageRouteBuilder(
-                  transitionDuration:
-                      widget.duration ?? Duration(milliseconds: 100),
-                  pageBuilder: (context, animation, secondaryAnimation) {
-                    animation = Tween(begin: 0.0, end: 1.0).animate(animation);
-                    return FadeTransition(
-                        opacity: animation,
-                        child: FocusedMenuDetails(
-                          itemExtent: widget.menuItemExtent,
-                          menuBoxDecoration: widget.menuBoxDecoration,
-                          child: widget.child,
-                          childOffset: childOffset,
-                          childSize: childSize,
-                          menuItems: widget.menuItems,
-                          blurSize: widget.blurSize,
-                          menuWidth: widget.menuWidth,
-                          blurBackgroundColor: widget.blurBackgroundColor,
-                          animateMenu: widget.animateMenuItems ?? true,
-                          bottomOffsetHeight: widget.bottomOffsetHeight ?? 0,
-                          menuOffset: widget.menuOffset ?? 0,
-                        ));
-                  },
-                  fullscreenDialog: true,
-                  opaque: false));
-        },
-        child: widget.child);
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+          key: containerKey,
+          onTap: widget.onPressed,
+          onLongPress: () async {
+            getOffset();
+            await Navigator.push(
+                context,
+                PageRouteBuilder(
+                    transitionDuration:
+                        widget.duration ?? Duration(milliseconds: 100),
+                    pageBuilder: (context, animation, secondaryAnimation) {
+                      animation =
+                          Tween(begin: 0.0, end: 1.0).animate(animation);
+                      return FadeTransition(
+                          opacity: animation,
+                          child: FocusedMenuDetails(
+                            itemExtent: widget.menuItemExtent,
+                            menuBoxDecoration: widget.menuBoxDecoration,
+                            child: widget.child,
+                            childOffset: childOffset,
+                            childSize: childSize,
+                            menuItems: widget.menuItems,
+                            blurSize: widget.blurSize,
+                            menuWidth: widget.menuWidth,
+                            blurBackgroundColor: widget.blurBackgroundColor,
+                            animateMenu: widget.animateMenuItems ?? true,
+                            bottomOffsetHeight: widget.bottomOffsetHeight ?? 0,
+                            menuOffset: widget.menuOffset ?? 0,
+                          ));
+                    },
+                    fullscreenDialog: true,
+                    opaque: false));
+          },
+          child: widget.child),
+    );
   }
 }
 
