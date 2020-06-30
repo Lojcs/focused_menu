@@ -197,7 +197,7 @@ class FocusedMenuDetails extends StatelessWidget {
                             },
                             child: Container(
                                 alignment: Alignment.center,
-                                margin: const EdgeInsets.only(bottom: 1),
+                                //margin: const EdgeInsets.only(bottom: 1),
                                 color: item.backgroundColor ?? Colors.white,
                                 height: itemExtent ?? 50.0,
                                 child: Padding(
@@ -214,7 +214,7 @@ class FocusedMenuDetails extends StatelessWidget {
                                     ],
                                   ),
                                 )));
-                        if (listItem == null)
+                        if (item == null)
                           return Center();
                         else if (animateMenu) {
                           return TweenAnimationBuilder(
@@ -240,12 +240,10 @@ class FocusedMenuDetails extends StatelessWidget {
             Positioned(
                 top: childOffset.dy,
                 left: childOffset.dx,
-                child: AbsorbPointer(
-                    absorbing: true,
-                    child: Container(
-                        width: childSize.width,
-                        height: childSize.height,
-                        child: child))),
+                child: Container(
+                    width: childSize.width,
+                    height: childSize.height,
+                    child: child)),
           ],
         ),
       ),
