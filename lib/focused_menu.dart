@@ -20,6 +20,7 @@ class FocusedMenuHolder extends StatefulWidget {
   final double bottomOffsetHeight;
   final double menuOffset;
   final TapMode tapMode;
+  final Function initData;
 
   const FocusedMenuHolder(
       {Key key,
@@ -36,7 +37,8 @@ class FocusedMenuHolder extends StatefulWidget {
       this.bottomOffsetHeight,
       this.menuOffset,
       //Tap mode to open menu.
-      this.tapMode = TapMode.onLongPress})
+      this.tapMode = TapMode.onLongPress,
+      this.initData})
       : super(key: key);
 
   @override
@@ -60,6 +62,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   _showMenu() async {
     getOffset();
+    initState();
     await Navigator.push(
         context,
         PageRouteBuilder(
