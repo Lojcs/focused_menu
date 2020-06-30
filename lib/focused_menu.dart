@@ -98,10 +98,10 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
           key: containerKey,
           onTap: widget.tapMode == TapMode.onLongPress
               ? widget.action
-              : () => _showMenu(),
+              : () async => await _showMenu(),
           onLongPress: widget.tapMode == TapMode.onTap
               ? widget.action
-              : () => _showMenu(),
+              : () async => await _showMenu(),
           child: widget.child),
     );
   }
