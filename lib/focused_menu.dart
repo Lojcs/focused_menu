@@ -100,7 +100,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
         onLongPress: widget.tapMode == TapMode.onTap
             ? widget.action
             : () async => await _showMenu(),
-        child: widget.child);
+        child: Material(color: Colors.transparent, child: widget.child));
   }
 }
 
