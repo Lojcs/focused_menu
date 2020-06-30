@@ -92,18 +92,15 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-          key: containerKey,
-          onTap: widget.tapMode == TapMode.onLongPress
-              ? widget.action
-              : () async => await _showMenu(),
-          onLongPress: widget.tapMode == TapMode.onTap
-              ? widget.action
-              : () async => await _showMenu(),
-          child: widget.child),
-    );
+    return InkWell(
+        key: containerKey,
+        onTap: widget.tapMode == TapMode.onLongPress
+            ? widget.action
+            : () async => await _showMenu(),
+        onLongPress: widget.tapMode == TapMode.onTap
+            ? widget.action
+            : () async => await _showMenu(),
+        child: Material(color: Colors.transparent, child: widget.child));
   }
 }
 
@@ -211,24 +208,28 @@ class FocusedMenuDetails extends StatelessWidget {
                               Navigator.pop(context);
                               item.onPressed();
                             },
-                            child: Container(
-                                alignment: Alignment.center,
-                                //margin: const EdgeInsets.only(bottom: 1),
-                                color: item.backgroundColor ?? Colors.white,
-                                height: itemExtent ?? 50.0,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 8.0, horizontal: 14),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: <Widget>[
-                                      Expanded(child: item.title),
-                                      if (item.trailingIcon != null) ...[
-                                        item.trailingIcon
-                                      ]
-                                    ],
-                                  ),
-                                )));
+                            child: Material(
+                              color: Colors.transparent,
+                              child: Container(
+                                  alignment: Alignment.center,
+                                  //margin: const EdgeInsets.only(bottom: 1),
+                                  color: item.backgroundColor ?? Colors.white,
+                                  height: itemExtent ?? 50.0,
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 8.0, horizontal: 14),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: <Widget>[
+                                        Expanded(child: item.title),
+                                        if (item.trailingIcon != null) ...[
+                                          item.trailingIcon
+                                        ]
+                                      ],
+                                    ),
+                                  )),
+                            ));
                         if (animateMenu) {
                           return TweenAnimationBuilder(
                               builder: (context, value, child) {
