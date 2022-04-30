@@ -88,6 +88,7 @@ class MyHomePage extends StatelessWidget {
                         animateMenuItems: true,
                         blurBackgroundColor: Colors.black54,
                         bottomOffsetHeight: 100,
+                        openWithTap: true,
                         menuItems: <FocusedMenuItem>[
                           FocusedMenuItem(title: Text("Open"),trailingIcon: Icon(Icons.open_in_new) ,onPressed: (){
                             Navigator.push(context, MaterialPageRoute(builder: (context)=>ScreenTwo()));
@@ -112,11 +113,11 @@ class MyHomePage extends StatelessWidget {
           ),
         )),
         bottomNavigationBar: BottomNavigationBar(items: <BottomNavigationBarItem>[
-          BottomNavigationBarItem(icon: Icon(Icons.add),title: Text("Home")),
-          BottomNavigationBarItem(icon: Icon(Icons.add),title: Text("Menu 2")),
-          BottomNavigationBarItem(icon: Icon(Icons.add),title: Text("Menu 3")),
-          BottomNavigationBarItem(icon: Icon(Icons.add),title: Text("Menu 4")),
-          BottomNavigationBarItem(icon: Icon(Icons.add),title: Text("Menu 5")),
+          BottomNavigationBarItem(icon: Icon(Icons.add),label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.add),label: "Menu 2"),
+          BottomNavigationBarItem(icon: Icon(Icons.add),label: "Menu 3"),
+          BottomNavigationBarItem(icon: Icon(Icons.add),label: "Menu 4"),
+          BottomNavigationBarItem(icon: Icon(Icons.add),label: "Menu 5"),
         ]),
       ),
     );
