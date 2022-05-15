@@ -13,7 +13,7 @@ class FocusedMenuHolder extends StatefulWidget {
   final List<FocusedMenuItem> menuItems;
   final bool? animateMenuItems;
   final BoxDecoration? menuBoxDecoration;
-  final Function onPressed;
+  final VoidCallback onPressed;
   final Duration? duration;
   final double? blurSize;
   final Color? blurBackgroundColor;
@@ -103,10 +103,10 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
           borderRadius: BorderRadius.all(Radius.circular(5.0)),
           key: containerKey,
           onTap: widget.tapMode == TapMode.onLongPress
-              ? widget.onPressed()
+              ? widget.onPressed
               : () async => await _showMenu(),
           onLongPress: widget.tapMode == TapMode.onTap
-              ? widget.onPressed()
+              ? widget.onPressed
               : () async => await _showMenu(),
           child: widget.child),
     );
