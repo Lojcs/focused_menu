@@ -97,19 +97,15 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-          borderRadius: BorderRadius.all(Radius.circular(5.0)),
-          key: containerKey,
-          onTap: widget.tapMode == TapMode.onLongPress
-              ? widget.onPressed
-              : () async => await _showMenu(),
-          onLongPress: widget.tapMode == TapMode.onTap
-              ? widget.onPressed
-              : () async => await _showMenu(),
-          child: widget.child),
-    );
+    return GestureDetector(
+        key: containerKey,
+        onTap: widget.tapMode == TapMode.onLongPress
+            ? widget.onPressed
+            : () async => await _showMenu(),
+        onLongPress: widget.tapMode == TapMode.onTap
+            ? widget.onPressed
+            : () async => await _showMenu(),
+        child: widget.child);
   }
 }
 
