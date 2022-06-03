@@ -260,21 +260,22 @@ class FocusedMenuDetails extends StatelessWidget {
               ),
             ),
             Positioned(
-                top: childOffset.dy,
-                left: childOffset.dx,
-                child: GestureDetector(
-                  onTap: () {
-                    Navigator.pop(context);
-                  },
-                  child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                        color: menuItems.first.backgroundColor ?? Colors.white,
-                      ),
-                      width: childSize?.width,
-                      height: childSize?.height,
-                      child: child),
-                )),
+              top: childOffset.dy,
+              left: childOffset.dx,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      color: menuItems.first.backgroundColor ?? Colors.white,
+                    ),
+                    width: childSize?.width,
+                    height: childSize?.height,
+                    child: child),
+              ),
+            ),
           ],
         ),
       ),
