@@ -268,7 +268,8 @@ class FocusedMenuDetails extends StatelessWidget {
                 },
                 child: Container(
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(15.0)),
+                      borderRadius: menuBoxDecoration?.borderRadius ??
+                          BorderRadius.circular(15),
                       color: menuItems.first.backgroundColor ?? Colors.white,
                     ),
                     width: childSize?.width,
