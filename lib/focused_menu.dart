@@ -205,7 +205,9 @@ class FocusedMenuDetails extends StatelessWidget {
                                 spreadRadius: 1)
                           ]),
                   child: ClipRRect(
-                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    borderRadius:
+                        menuBoxDecoration?.borderRadius as BorderRadius? ??
+                            BorderRadius.circular(15),
                     child: ListView.builder(
                       itemCount: menuItems.length,
                       padding: EdgeInsets.zero,
@@ -267,14 +269,15 @@ class FocusedMenuDetails extends StatelessWidget {
                   Navigator.pop(context);
                 },
                 child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: menuBoxDecoration?.borderRadius ??
-                          BorderRadius.circular(15),
-                      color: menuItems.first.backgroundColor ?? Colors.white,
-                    ),
-                    width: childSize?.width,
-                    height: childSize?.height,
-                    child: child),
+                  decoration: BoxDecoration(
+                    borderRadius: menuBoxDecoration?.borderRadius ??
+                        BorderRadius.circular(15),
+                    color: menuItems.first.backgroundColor ?? Colors.white,
+                  ),
+                  width: childSize?.width,
+                  height: childSize?.height,
+                  child: child,
+                ),
               ),
             ),
           ],
