@@ -1,6 +1,8 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:focused_menu/modals.dart';
+import 'package:focused_menu/src/models/focused_menu_item.dart';
+import 'package:focused_menu/src/widgets/toolbar_actions.dart';
 
 class FocusedMenuDetails extends StatelessWidget {
   final List<FocusedMenuItem> menuItems;
@@ -16,6 +18,12 @@ class FocusedMenuDetails extends StatelessWidget {
   final double? bottomOffsetHeight;
   final double? menuOffset;
 
+  /// Actions to be shown in the toolbar.
+  final List<Widget>? toolbarActions;
+
+  /// Enable scroll in menu.
+  final bool enableMenuScroll;
+
   const FocusedMenuDetails(
       {Key? key,
       required this.menuItems,
@@ -28,18 +36,19 @@ class FocusedMenuDetails extends StatelessWidget {
       required this.blurSize,
       required this.blurBackgroundColor,
       required this.menuWidth,
+      required this.enableMenuScroll,
       this.bottomOffsetHeight,
-      this.menuOffset})
+      this.menuOffset,
+      this.toolbarActions})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
-    menuItems.removeWhere((element) => element == null);
     final maxMenuHeight = size.height * 0.45;
     final listHeight = menuItems.length * (itemExtent ?? 50.0);
 
-    final maxMenuWidth = menuWidth ?? childSize!.width;
+    final maxMenuWidth = menuWidth ?? childSize!.width; // (size.width * 0.70);
     final menuHeight = listHeight < maxMenuHeight ? listHeight : maxMenuHeight;
     final leftOffset = (childOffset.dx + maxMenuWidth) < size.width
         ? childOffset.dx
@@ -95,35 +104,49 @@ class FocusedMenuDetails extends StatelessWidget {
                           ]),
                   child: ClipRRect(
                     borderRadius:
-                        menuBoxDecoration?.borderRadius as BorderRadius? ??
+                        menuBoxDecoration?.borderRadius as BorderRadius? ?? //
                             BorderRadius.circular(15),
                     child: ListView.builder(
                       itemCount: menuItems.length,
                       padding: EdgeInsets.zero,
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: enableMenuScroll
+                          ? BouncingScrollPhysics()
+                          : NeverScrollableScrollPhysics(),
                       itemBuilder: (context, index) {
                         FocusedMenuItem item = menuItems[index];
                         Widget listItem = Container(
-                            alignment: Alignment.center,
-                            //margin: const EdgeInsets.only(bottom: 1),
-                            color: item.backgroundColor ?? Colors.white,
-                            height: itemExtent ?? 50.0,
+                            alignment: Alignment.center, //
+                            //margin: const EdgeInsets.only(bottom: 1), //
+                            color: item.backgroundColor ?? Colors.white, //
+                            height: itemExtent ?? 50.0, //
                             child: Material(
-                              color: Colors.transparent,
+                              //
+                              color: Colors.transparent, //
                               child: InkWell(
                                 onTap: () {
                                   Navigator.pop(context);
                                   item.onPressed();
                                 },
+                                // child: Container(
+                                // alignment: Alignment.center,
+                                // margin: const EdgeInsets.only(bottom: 1),
+                                // color: item.backgroundColor ?? Colors.white,
+                                // height: itemExtent ?? 50.0,
                                 child: Padding(
+                                  // padding: const EdgeInsets.symmetric(
+                                  //     vertical: 8.0, horizontal: 14),
+                                  // child: Row(
+                                  //   mainAxisAlignment:
+                                  //       MainAxisAlignment.spaceBetween,
+                                  //   children: <Widget>[
+                                  //     item.title,
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 14),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.start,
                                     children: <Widget>[
                                       Expanded(child: item.title),
-                                      if (item.trailingIcon != null)
-                                        item.trailingIcon as Widget
+                                      if (item.trailing != null) item.trailing!
                                     ],
                                   ),
                                 ),
@@ -150,6 +173,8 @@ class FocusedMenuDetails extends StatelessWidget {
                 ),
               ),
             ),
+            if (toolbarActions != null)
+              ToolbarActions(toolbarActions: toolbarActions!),
             Positioned(
               top: childOffset.dy,
               left: childOffset.dx,
@@ -168,6 +193,12 @@ class FocusedMenuDetails extends StatelessWidget {
                   child: child,
                 ),
               ),
+              // AbsorbPointer(
+              //       absorbing: true,
+              //       child: Container(
+              //           width: childSize!.width,
+              //           height: childSize!.height,
+              //           child: child))),
             ),
           ],
         ),

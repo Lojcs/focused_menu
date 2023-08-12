@@ -1,10 +1,27 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:focused_menu/modals.dart';
+import 'package:focused_menu/src/models/focused_menu_item.dart';
+import 'package:focused_menu/src/widgets/focused_menu_datails.dart';
 
-import 'focused_menu_datails.dart';
+class FocusedMenuHolderController {
+  late _FocusedMenuHolderState _widgetState;
+  bool _isOpened = false;
 
-enum TapMode { onTap, onLongPress }
+  void _addState(_FocusedMenuHolderState widgetState) {
+    this._widgetState = widgetState;
+  }
+
+  void open() {
+    _widgetState.openMenu(_widgetState.context);
+    _isOpened = true;
+  }
+
+  void close() {
+    if (_isOpened) {
+      Navigator.pop(_widgetState.context);
+      _isOpened = false;
+    }
+  }
+}
 
 class FocusedMenuHolder extends StatefulWidget {
   final Widget child;
@@ -13,23 +30,35 @@ class FocusedMenuHolder extends StatefulWidget {
   final List<FocusedMenuItem> menuItems;
   final bool? animateMenuItems;
   final BoxDecoration? menuBoxDecoration;
-  final VoidCallback onPressed;
+
+  /// What to do if pressed but not opening due to [openWithTap]
+  final Function? onPressed;
   final Duration? duration;
   final double? blurSize;
   final Color? blurBackgroundColor;
   final double? bottomOffsetHeight;
   final double? menuOffset;
 
+  /// Actions to be shown in the toolbar.
+  final List<Widget>? toolbarActions;
+
+  /// Enable scroll in menu. Default is true.
+  final bool enableMenuScroll;
+
   /// Open with tap insted of long press.
   final bool openWithTap;
-  final TapMode? tapMode;
+
+  final FocusedMenuHolderController? controller;
+  final VoidCallback? onOpened;
+  final VoidCallback? onClosed;
+
   final Future? initData;
 
   const FocusedMenuHolder(
       {Key? key,
       required this.child,
-      required this.onPressed,
       required this.menuItems,
+      this.onPressed,
       this.duration,
       this.menuBoxDecoration,
       this.menuItemExtent,
@@ -39,14 +68,17 @@ class FocusedMenuHolder extends StatefulWidget {
       this.menuWidth,
       this.bottomOffsetHeight,
       this.menuOffset,
-      //Tap mode to open menu.
+      this.toolbarActions,
+      this.enableMenuScroll = true,
       this.openWithTap = false,
-      this.tapMode = TapMode.onLongPress,
+      this.controller,
+      this.onOpened,
+      this.onClosed,
       this.initData})
       : super(key: key);
 
   @override
-  _FocusedMenuHolderState createState() => _FocusedMenuHolderState();
+  _FocusedMenuHolderState createState() => _FocusedMenuHolderState(controller);
 }
 
 class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
@@ -54,7 +86,13 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
   Offset childOffset = Offset(0, 0);
   Size? childSize;
 
-  getOffset() {
+  _FocusedMenuHolderState(FocusedMenuHolderController? _controller) {
+    if (_controller != null) {
+      _controller._addState(this);
+    }
+  }
+
+  void _getOffset() {
     RenderBox renderBox =
         containerKey.currentContext!.findRenderObject() as RenderBox;
     Size size = renderBox.size;
@@ -65,36 +103,6 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
     });
   }
 
-  _showMenu() async {
-    getOffset();
-    await widget.initData;
-    await Navigator.push(
-        context,
-        PageRouteBuilder(
-            transitionDuration: widget.duration ?? Duration(milliseconds: 100),
-            pageBuilder: (context, animation, secondaryAnimation) {
-              animation = Tween(begin: 0.0, end: 1.0).animate(animation);
-              return FadeTransition(
-                  opacity: animation,
-                  child: FocusedMenuDetails(
-                    itemExtent: widget.menuItemExtent,
-                    menuBoxDecoration: widget.menuBoxDecoration,
-                    child: widget.child,
-                    childOffset: childOffset,
-                    childSize: childSize,
-                    menuItems: widget.menuItems,
-                    blurSize: widget.blurSize,
-                    menuWidth: widget.menuWidth,
-                    blurBackgroundColor: widget.blurBackgroundColor,
-                    animateMenu: widget.animateMenuItems ?? true,
-                    bottomOffsetHeight: widget.bottomOffsetHeight ?? 0,
-                    menuOffset: widget.menuOffset ?? 0,
-                  ));
-            },
-            fullscreenDialog: true,
-            opaque: false));
-  }
-
   @override
   Widget build(BuildContext context) {
     return Material(
@@ -102,13 +110,56 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
       child: InkWell(
           borderRadius: BorderRadius.circular(15),
           key: containerKey,
-          onTap: widget.tapMode == TapMode.onLongPress
-              ? widget.onPressed
-              : () async => await _showMenu(),
-          onLongPress: widget.tapMode == TapMode.onTap
-              ? widget.onPressed
-              : () async => await _showMenu(),
+          onTap: () async {
+            if (widget.openWithTap) {
+              await openMenu(context);
+            } else {
+              widget.onPressed?.call();
+            }
+          },
+          onLongPress: () async {
+            if (!widget.openWithTap) {
+              await openMenu(context);
+            } else {
+              widget.onPressed?.call();
+            }
+          },
           child: widget.child),
     );
+  }
+
+  Future openMenu(BuildContext context) async {
+    _getOffset();
+    widget.onOpened?.call();
+    await widget.initData;
+    await Navigator.push(
+        context,
+        PageRouteBuilder(
+          transitionDuration: widget.duration ?? Duration(milliseconds: 100),
+          pageBuilder: (context, animation, secondaryAnimation) {
+            animation = Tween(begin: 0.0, end: 1.0).animate(animation);
+            return FadeTransition(
+              opacity: animation,
+              child: FocusedMenuDetails(
+                itemExtent: widget.menuItemExtent,
+                menuBoxDecoration: widget.menuBoxDecoration,
+                child: widget.child,
+                childOffset: childOffset,
+                childSize: childSize,
+                menuItems: widget.menuItems,
+                blurSize: widget.blurSize,
+                menuWidth: widget.menuWidth,
+                blurBackgroundColor: widget.blurBackgroundColor,
+                animateMenu: widget.animateMenuItems ?? true,
+                bottomOffsetHeight: widget.bottomOffsetHeight ?? 0,
+                menuOffset: widget.menuOffset ?? 0,
+                toolbarActions: widget.toolbarActions,
+                enableMenuScroll: widget.enableMenuScroll,
+              ),
+            );
+          },
+          fullscreenDialog: true,
+          opaque: false,
+        )).whenComplete(() => widget.onClosed?.call());
   }
 }
