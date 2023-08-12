@@ -7,6 +7,7 @@ import 'package:focused_menu/src/widgets/toolbar_actions.dart';
 class FocusedMenuDetails extends StatelessWidget {
   final List<FocusedMenuItem> menuItems;
   final BoxDecoration? menuBoxDecoration;
+  final BoxDecoration? childDecoration;
   final Offset childOffset;
   final double? itemExtent;
   final Size? childSize;
@@ -31,6 +32,7 @@ class FocusedMenuDetails extends StatelessWidget {
       required this.childOffset,
       required this.childSize,
       required this.menuBoxDecoration,
+      this.childDecoration,
       required this.itemExtent,
       required this.animateMenu,
       required this.blurSize,
@@ -103,9 +105,9 @@ class FocusedMenuDetails extends StatelessWidget {
                                 spreadRadius: 1)
                           ]),
                   child: ClipRRect(
-                    borderRadius:
-                        menuBoxDecoration?.borderRadius as BorderRadius? ?? //
-                            BorderRadius.circular(15),
+                    borderRadius: menuBoxDecoration?.borderRadius
+                            ?.resolve(TextDirection.ltr) ??
+                        BorderRadius.circular(5),
                     child: ListView.builder(
                       itemCount: menuItems.length,
                       padding: EdgeInsets.zero,
@@ -176,30 +178,39 @@ class FocusedMenuDetails extends StatelessWidget {
             if (toolbarActions != null)
               ToolbarActions(toolbarActions: toolbarActions!),
             Positioned(
-              top: childOffset.dy,
-              left: childOffset.dx,
-              child: GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                },
+                top: childOffset.dy,
+                left: childOffset.dx,
                 child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: menuBoxDecoration?.borderRadius ??
-                        BorderRadius.circular(15),
-                    color: menuItems.first.backgroundColor ?? Colors.white,
-                  ),
-                  width: childSize?.width,
-                  height: childSize?.height,
-                  child: child,
+                    decoration: BoxDecoration(
+                      borderRadius: childDecoration?.borderRadius ??
+                          BorderRadius.circular(5),
+                      color: menuItems.first.backgroundColor ?? Colors.white,
+                    ),
+                    width: childSize!.width,
+                    height: childSize!.height,
+                    child: Center())
+                // child: GestureDetector(
+                //   onTap: () {
+                //     Navigator.pop(context);
+                //   },
+                //   child: Container(
+                //     decoration: BoxDecoration(
+                //       borderRadius: childDecoration?.borderRadius ??
+                //           BorderRadius.circular(5),
+                //       color: menuItems.first.backgroundColor ?? Colors.white,
+                //     ),
+                //     width: childSize?.width,
+                //     height: childSize?.height,
+                //     child: child,
+                //   ),
+                // ),
+                // AbsorbPointer(
+                //       absorbing: true,
+                //       child: Container(
+                //           width: childSize!.width,
+                //           height: childSize!.height,
+                //           child: child))),
                 ),
-              ),
-              // AbsorbPointer(
-              //       absorbing: true,
-              //       child: Container(
-              //           width: childSize!.width,
-              //           height: childSize!.height,
-              //           child: child))),
-            ),
           ],
         ),
       ),

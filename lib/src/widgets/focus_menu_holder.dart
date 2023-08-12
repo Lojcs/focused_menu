@@ -30,6 +30,7 @@ class FocusedMenuHolder extends StatefulWidget {
   final List<FocusedMenuItem> menuItems;
   final bool? animateMenuItems;
   final BoxDecoration? menuBoxDecoration;
+  final BoxDecoration? childDecoration;
 
   /// What to do if pressed but not opening due to [openWithTap]
   final Function? onPressed;
@@ -61,6 +62,7 @@ class FocusedMenuHolder extends StatefulWidget {
       this.onPressed,
       this.duration,
       this.menuBoxDecoration,
+      this.childDecoration,
       this.menuItemExtent,
       this.animateMenuItems,
       this.blurSize,
@@ -105,10 +107,12 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
+    return Container(
+      decoration: widget.childDecoration,
       child: InkWell(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: widget.childDecoration?.borderRadius
+                  ?.resolve(TextDirection.ltr) ??
+              BorderRadius.circular(5),
           key: containerKey,
           onTap: () async {
             if (widget.openWithTap) {
@@ -143,6 +147,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
               child: FocusedMenuDetails(
                 itemExtent: widget.menuItemExtent,
                 menuBoxDecoration: widget.menuBoxDecoration,
+                childDecoration: widget.childDecoration,
                 child: widget.child,
                 childOffset: childOffset,
                 childSize: childSize,
