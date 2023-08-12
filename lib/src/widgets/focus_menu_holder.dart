@@ -109,26 +109,29 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
   Widget build(BuildContext context) {
     return Container(
       decoration: widget.childDecoration,
-      child: InkWell(
-          borderRadius: widget.childDecoration?.borderRadius
-                  ?.resolve(TextDirection.ltr) ??
-              BorderRadius.circular(5),
-          key: containerKey,
-          onTap: () async {
-            if (widget.openWithTap) {
-              await openMenu(context);
-            } else {
-              widget.onPressed?.call();
-            }
-          },
-          onLongPress: () async {
-            if (!widget.openWithTap) {
-              await openMenu(context);
-            } else {
-              widget.onPressed?.call();
-            }
-          },
-          child: widget.child),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+            borderRadius: widget.childDecoration?.borderRadius
+                    ?.resolve(TextDirection.ltr) ??
+                BorderRadius.circular(5),
+            key: containerKey,
+            onTap: () async {
+              if (widget.openWithTap) {
+                await openMenu(context);
+              } else {
+                widget.onPressed?.call();
+              }
+            },
+            onLongPress: () async {
+              if (!widget.openWithTap) {
+                await openMenu(context);
+              } else {
+                widget.onPressed?.call();
+              }
+            },
+            child: widget.child),
+      ),
     );
   }
 

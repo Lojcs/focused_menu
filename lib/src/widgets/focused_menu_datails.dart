@@ -32,7 +32,7 @@ class FocusedMenuDetails extends StatelessWidget {
       required this.childOffset,
       required this.childSize,
       required this.menuBoxDecoration,
-      this.childDecoration,
+      required this.childDecoration,
       required this.itemExtent,
       required this.animateMenu,
       required this.blurSize,
@@ -137,18 +137,16 @@ class FocusedMenuDetails extends StatelessWidget {
                                 child: Padding(
                                   // padding: const EdgeInsets.symmetric(
                                   //     vertical: 8.0, horizontal: 14),
-                                  // child: Row(
-                                  //   mainAxisAlignment:
-                                  //       MainAxisAlignment.spaceBetween,
-                                  //   children: <Widget>[
-                                  //     item.title,
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 14),
                                   child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
-                                      Expanded(child: item.title),
-                                      if (item.trailing != null) item.trailing!
+                                      item.title,
+                                      if (item.trailing != null) ...[
+                                        item.trailing!
+                                      ]
                                     ],
                                   ),
                                 ),
@@ -178,39 +176,32 @@ class FocusedMenuDetails extends StatelessWidget {
             if (toolbarActions != null)
               ToolbarActions(toolbarActions: toolbarActions!),
             Positioned(
-                top: childOffset.dy,
-                left: childOffset.dx,
-                child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: childDecoration?.borderRadius ??
-                          BorderRadius.circular(5),
-                      color: menuItems.first.backgroundColor ?? Colors.white,
-                    ),
-                    width: childSize!.width,
-                    height: childSize!.height,
-                    child: Center())
-                // child: GestureDetector(
-                //   onTap: () {
-                //     Navigator.pop(context);
-                //   },
-                //   child: Container(
-                //     decoration: BoxDecoration(
-                //       borderRadius: childDecoration?.borderRadius ??
-                //           BorderRadius.circular(5),
-                //       color: menuItems.first.backgroundColor ?? Colors.white,
-                //     ),
-                //     width: childSize?.width,
-                //     height: childSize?.height,
-                //     child: child,
-                //   ),
-                // ),
-                // AbsorbPointer(
-                //       absorbing: true,
-                //       child: Container(
-                //           width: childSize!.width,
-                //           height: childSize!.height,
-                //           child: child))),
+              top: childOffset.dy -
+                  (childDecoration?.border?.dimensions.vertical ?? 0) / 2,
+              left: childOffset.dx -
+                  (childDecoration?.border?.dimensions.horizontal ?? 0) / 2,
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.pop(context);
+                },
+                child: AbsorbPointer(
+                  absorbing: false,
+                  child: Container(
+                    decoration: childDecoration,
+                    width: childSize == null
+                        ? null
+                        : childSize!.width +
+                            (childDecoration?.border?.dimensions.horizontal ??
+                                0),
+                    height: childSize == null
+                        ? null
+                        : childSize!.height +
+                            (childDecoration?.border?.dimensions.vertical ?? 0),
+                    child: child,
+                  ),
                 ),
+              ),
+            ),
           ],
         ),
       ),
