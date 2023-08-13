@@ -117,26 +117,19 @@ class FocusedMenuDetails extends StatelessWidget {
                       itemBuilder: (context, index) {
                         FocusedMenuItem item = menuItems[index];
                         Widget listItem = Container(
-                            alignment: Alignment.center, //
-                            //margin: const EdgeInsets.only(bottom: 1), //
-                            color: item.backgroundColor ?? Colors.white, //
-                            height: itemExtent ?? 50.0, //
+                            alignment: Alignment.center,
+                            color: item.backgroundColor ?? Colors.white,
+                            height: itemExtent ?? 50.0,
                             child: Material(
-                              //
-                              color: Colors.transparent, //
+                              color: Colors.transparent,
                               child: InkWell(
                                 onTap: () {
                                   Navigator.pop(context);
                                   item.onPressed();
                                 },
-                                // child: Container(
-                                // alignment: Alignment.center,
-                                // margin: const EdgeInsets.only(bottom: 1),
-                                // color: item.backgroundColor ?? Colors.white,
-                                // height: itemExtent ?? 50.0,
+                                highlightColor: item.highlightColor,
+                                splashColor: item.highlightColor,
                                 child: Padding(
-                                  // padding: const EdgeInsets.symmetric(
-                                  //     vertical: 8.0, horizontal: 14),
                                   padding: const EdgeInsets.symmetric(
                                       vertical: 10.0, horizontal: 14),
                                   child: Row(
@@ -176,10 +169,8 @@ class FocusedMenuDetails extends StatelessWidget {
             if (toolbarActions != null)
               ToolbarActions(toolbarActions: toolbarActions!),
             Positioned(
-              top: childOffset.dy -
-                  (childDecoration?.border?.dimensions.vertical ?? 0) / 2,
-              left: childOffset.dx -
-                  (childDecoration?.border?.dimensions.horizontal ?? 0) / 2,
+              top: childOffset.dy,
+              left: childOffset.dx,
               child: GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
@@ -187,17 +178,16 @@ class FocusedMenuDetails extends StatelessWidget {
                 child: AbsorbPointer(
                   absorbing: false,
                   child: Container(
-                    decoration: childDecoration,
-                    width: childSize == null
-                        ? null
-                        : childSize!.width +
-                            (childDecoration?.border?.dimensions.horizontal ??
-                                0),
-                    height: childSize == null
-                        ? null
-                        : childSize!.height +
-                            (childDecoration?.border?.dimensions.vertical ?? 0),
-                    child: child,
+                    width: childSize?.width,
+                    height: childSize?.height,
+                    child: Stack(
+                      children: [
+                        Container(
+                          decoration: childDecoration,
+                        ),
+                        child
+                      ],
+                    ),
                   ),
                 ),
               ),

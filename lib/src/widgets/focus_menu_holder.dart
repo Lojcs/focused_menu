@@ -31,6 +31,8 @@ class FocusedMenuHolder extends StatefulWidget {
   final bool? animateMenuItems;
   final BoxDecoration? menuBoxDecoration;
   final BoxDecoration? childDecoration;
+  final Color? childHighlightColor;
+  final Widget? childOverlay;
 
   /// What to do if pressed but not opening due to [openWithTap]
   final Function? onPressed;
@@ -63,6 +65,8 @@ class FocusedMenuHolder extends StatefulWidget {
       this.duration,
       this.menuBoxDecoration,
       this.childDecoration,
+      this.childHighlightColor,
+      this.childOverlay,
       this.menuItemExtent,
       this.animateMenuItems,
       this.blurSize,
@@ -107,31 +111,38 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: widget.childDecoration,
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-            borderRadius: widget.childDecoration?.borderRadius
-                    ?.resolve(TextDirection.ltr) ??
-                BorderRadius.circular(5),
-            key: containerKey,
-            onTap: () async {
-              if (widget.openWithTap) {
-                await openMenu(context);
-              } else {
-                widget.onPressed?.call();
-              }
-            },
-            onLongPress: () async {
-              if (!widget.openWithTap) {
-                await openMenu(context);
-              } else {
-                widget.onPressed?.call();
-              }
-            },
-            child: widget.child),
-      ),
+    return Stack(
+      children: [
+        widget.childDecoration != null
+            ? Container(decoration: widget.childDecoration)
+            : Center(),
+        widget.childOverlay ?? Center(),
+        Material(
+          color: Colors.transparent,
+          child: InkWell(
+              highlightColor: widget.childHighlightColor,
+              splashColor: widget.childHighlightColor,
+              borderRadius: widget.childDecoration?.borderRadius
+                      ?.resolve(TextDirection.ltr) ??
+                  BorderRadius.circular(5),
+              key: containerKey,
+              onTap: () async {
+                if (widget.openWithTap) {
+                  await openMenu(context);
+                } else {
+                  widget.onPressed?.call();
+                }
+              },
+              onLongPress: () async {
+                if (!widget.openWithTap) {
+                  await openMenu(context);
+                } else {
+                  widget.onPressed?.call();
+                }
+              },
+              child: widget.child),
+        ),
+      ],
     );
   }
 
