@@ -8,6 +8,7 @@ class FocusedMenuDetails extends StatelessWidget {
   final List<FocusedMenuItem> menuItems;
   final BoxDecoration? menuBoxDecoration;
   final BoxDecoration? childDecoration;
+  final Widget? childLowerlay;
   final Offset childOffset;
   final double? itemExtent;
   final Size? childSize;
@@ -33,6 +34,7 @@ class FocusedMenuDetails extends StatelessWidget {
       required this.childSize,
       required this.menuBoxDecoration,
       required this.childDecoration,
+      required this.childLowerlay,
       required this.itemExtent,
       required this.animateMenu,
       required this.blurSize,
@@ -109,6 +111,9 @@ class FocusedMenuDetails extends StatelessWidget {
                             ?.resolve(TextDirection.ltr) ??
                         BorderRadius.circular(5),
                     child: ListView.builder(
+                      scrollDirection: maxMenuWidth < menuHeight * 2
+                          ? Axis.vertical
+                          : Axis.horizontal,
                       itemCount: menuItems.length,
                       padding: EdgeInsets.zero,
                       physics: enableMenuScroll
@@ -119,7 +124,12 @@ class FocusedMenuDetails extends StatelessWidget {
                         Widget listItem = Container(
                             alignment: Alignment.center,
                             color: item.backgroundColor ?? Colors.white,
-                            height: itemExtent ?? 50.0,
+                            height: maxMenuWidth < menuHeight * 2
+                                ? itemExtent ?? 50.0
+                                : menuHeight,
+                            width: maxMenuWidth < menuHeight * 2
+                                ? maxMenuWidth
+                                : maxMenuWidth / menuItems.length,
                             child: Material(
                               color: Colors.transparent,
                               child: InkWell(
@@ -129,10 +139,18 @@ class FocusedMenuDetails extends StatelessWidget {
                                 },
                                 highlightColor: item.highlightColor,
                                 splashColor: item.highlightColor,
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 10.0, horizontal: 14),
-                                  child: Row(
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: maxMenuWidth < menuHeight * 2
+                                          ? 10
+                                          : 20,
+                                      horizontal: 14),
+                                  width: maxMenuWidth,
+                                  height: menuHeight,
+                                  child: Flex(
+                                    direction: maxMenuWidth < menuHeight * 2
+                                        ? Axis.horizontal
+                                        : Axis.vertical,
                                     mainAxisAlignment:
                                         MainAxisAlignment.spaceBetween,
                                     children: <Widget>[
@@ -182,9 +200,10 @@ class FocusedMenuDetails extends StatelessWidget {
                     height: childSize?.height,
                     child: Stack(
                       children: [
-                        Container(
-                          decoration: childDecoration,
-                        ),
+                        childDecoration != null
+                            ? Container(decoration: childDecoration)
+                            : Center(),
+                        childLowerlay ?? Center(),
                         child
                       ],
                     ),
