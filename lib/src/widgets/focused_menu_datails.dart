@@ -141,10 +141,10 @@ class FocusedMenuDetails extends StatelessWidget {
                                 splashColor: item.highlightColor,
                                 child: Container(
                                   padding: EdgeInsets.symmetric(
-                                      vertical: maxMenuWidth < menuHeight * 2
-                                          ? 10
-                                          : 20,
-                                      horizontal: 14),
+                                      vertical: 10,
+                                      horizontal: maxMenuWidth < menuHeight * 2
+                                          ? 14
+                                          : 5),
                                   width: maxMenuWidth,
                                   height: menuHeight,
                                   child: Flex(
@@ -152,9 +152,13 @@ class FocusedMenuDetails extends StatelessWidget {
                                         ? Axis.horizontal
                                         : Axis.vertical,
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                        maxMenuWidth < menuHeight * 2
+                                            ? MainAxisAlignment.center
+                                            : MainAxisAlignment.center,
                                     children: <Widget>[
-                                      item.title,
+                                      Expanded(
+                                        child: item.title,
+                                      ),
                                       if (item.trailing != null) ...[
                                         item.trailing!
                                       ]
