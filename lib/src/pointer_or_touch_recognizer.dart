@@ -183,6 +183,11 @@ class PointerOrTouchRecognizer extends PrimaryPointerGestureRecognizer {
         });
       }
     } else if (event is PointerUpEvent) {
+      if (event.kind == PointerDeviceKind.touch) {
+        if (onTapEnd != null) {
+          invokeCallback<void>('onTapEnd', onTapEnd!);
+        }
+      }
       if (_down?.pointer == event.pointer) {
         if (event.kind == PointerDeviceKind.touch) {
           _tapReleased = true;
@@ -190,9 +195,6 @@ class PointerOrTouchRecognizer extends PrimaryPointerGestureRecognizer {
             if (onTap != null) {
               invokeCallback<void>('onTap', onTap!);
             }
-          }
-          if (onTapEnd != null) {
-            invokeCallback<void>('onTapEnd', onTapEnd!);
           }
         } else {
           if (_down!.buttons == kPrimaryButton) {
