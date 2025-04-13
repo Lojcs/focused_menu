@@ -59,7 +59,7 @@ class _Example1State extends State<Example1> {
                           animateMenuItems: true,
                           blurBackgroundColor: Colors.black54,
                           bottomOffsetHeight: 100,
-                          openWithTap: false,
+                          showMenuOnMediumHold: true,
                           enableMenuScroll: false,
                           toolbarActions: [
                             IconButton(
@@ -102,7 +102,7 @@ class _Example1State extends State<Example1> {
                                 ),
                                 onPressed: () {}),
                           ],
-                          onPressed: () {},
+                          onTap: () {},
                           child: Card(
                             child: Column(
                               children: <Widget>[

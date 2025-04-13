@@ -20,7 +20,7 @@ class _Example2State extends State<Example2> {
           FocusedMenuHolder(
             menuOffset: 0,
             controller: _avatarController,
-            onPressed: () {},
+            onTap: () {},
             menuItems: <FocusedMenuItem>[
               FocusedMenuItem(
                 title: Text("This is a button"),

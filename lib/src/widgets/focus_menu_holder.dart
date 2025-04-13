@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:focused_menu/src/models/focused_menu_item.dart';
 import 'package:focused_menu/src/widgets/focused_menu_datails.dart';
 
+import '../pointer_or_touch_recognizer.dart';
+
 class FocusedMenuHolderController {
   late _FocusedMenuHolderState _widgetState;
   bool _isOpened = false;
@@ -23,6 +25,7 @@ class FocusedMenuHolderController {
   }
 }
 
+/// Shows a focused menu on right click and optionally also medium tap hold.
 class FocusedMenuHolder extends StatefulWidget {
   final Widget child;
   final double? menuItemExtent;
@@ -36,13 +39,13 @@ class FocusedMenuHolder extends StatefulWidget {
   final Widget? openChildLowerlay;
   final Color? childHighlightColor;
 
-  /// What to do if pressed but not opening due to [openWithTap]
-  final Function? onPressed;
   final Duration? duration;
   final double? blurSize;
   final Color? blurBackgroundColor;
   final double? bottomOffsetHeight;
   final double? menuOffset;
+
+  final FocusedMenuHolderController? controller;
 
   /// Actions to be shown in the toolbar.
   final List<Widget>? toolbarActions;
@@ -50,12 +53,47 @@ class FocusedMenuHolder extends StatefulWidget {
   /// Enable scroll in menu. Default is true.
   final bool enableMenuScroll;
 
-  /// Open with tap insted of long press.
-  final bool openWithTap;
+  /// Wheter to show menu on medium tap hold.
+  final bool showMenuOnMediumHold;
 
-  final FocusedMenuHolderController? controller;
-  final VoidCallback? onOpened;
-  final VoidCallback? onClosed;
+  /// Called when a tap end
+  final VoidCallback? onTapEnd;
+
+  /// Called when a short length tap is registered
+  final VoidCallback? onTap;
+
+  /// Called when a short length tap is registered. Inhibits onTap.
+  final VoidCallback? onShortTapHold;
+
+  /// Called when a long length tap is registered
+  final VoidCallback? onLongTapHold;
+
+  /// Called when a primary click is registered
+  final VoidCallback? onPrimaryClick;
+
+  /// Called when a double click is registered
+  final VoidCallback? onDoubleClick;
+
+  /// Called when a selection click (ctrl+primary) is registered
+  final VoidCallback? onAddSelect;
+
+  /// Called when a range selection click (shift+primary) is registered
+  final VoidCallback? onRangeSelect;
+
+  /// Called when a tap is dragged outside the area
+  final VoidCallback? onTapDrag;
+
+  /// Called when a primary click is dragged outside the area
+  final VoidCallback? onPrimaryDrag;
+
+  /// Called when pointer has been dragged over (from outside the area)
+  final VoidCallback? onDragOver;
+
+  /// Callback to call before the menu opens
+  final VoidCallback? beforeOpened;
+
+  /// Callback to call after the menu is closed
+  final VoidCallback? afterClosed;
 
   final Future? initData;
 
@@ -63,7 +101,18 @@ class FocusedMenuHolder extends StatefulWidget {
       {Key? key,
       required this.child,
       required this.menuItems,
-      this.onPressed,
+      this.showMenuOnMediumHold = true,
+      this.onTapEnd,
+      this.onTap,
+      this.onShortTapHold,
+      this.onLongTapHold,
+      this.onPrimaryClick,
+      this.onDoubleClick,
+      this.onAddSelect,
+      this.onRangeSelect,
+      this.onTapDrag,
+      this.onPrimaryDrag,
+      this.onDragOver,
       this.duration,
       this.menuBoxDecoration,
       this.childDecoration,
@@ -80,10 +129,9 @@ class FocusedMenuHolder extends StatefulWidget {
       this.menuOffset,
       this.toolbarActions,
       this.enableMenuScroll = true,
-      this.openWithTap = false,
       this.controller,
-      this.onOpened,
-      this.onClosed,
+      this.beforeOpened,
+      this.afterClosed,
       this.initData})
       : super(key: key);
 
@@ -124,27 +172,41 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
         Material(
           color: Colors.transparent,
           child: InkWell(
-              highlightColor: widget.childHighlightColor,
-              splashColor: widget.childHighlightColor,
-              borderRadius: widget.childDecoration?.borderRadius
-                      ?.resolve(TextDirection.ltr) ??
-                  BorderRadius.circular(5),
+            onTap: () {},
+            borderRadius: widget.childDecoration?.borderRadius
+                    ?.resolve(TextDirection.ltr) ??
+                BorderRadius.circular(5),
+            highlightColor: widget.childHighlightColor,
+            splashColor: widget.childHighlightColor,
+            child: RawGestureDetector(
+              behavior: HitTestBehavior.opaque,
+              gestures: {
+                PointerOrTouchRecognizer: PointerOrTouchRecognizerFactory(
+                  onTapEnd: widget.onTapEnd,
+                  onTap: widget.onTap,
+                  onShortTapHold: widget.onShortTapHold,
+                  onMediumTapHold: widget.showMenuOnMediumHold
+                      ? () async {
+                          await openMenu(context);
+                        }
+                      : null,
+                  onLongTapHold: widget.onLongTapHold,
+                  onPrimaryClick: widget.onPrimaryClick,
+                  onDoubleClick: widget.onDoubleClick,
+                  onSecondaryClick: () async {
+                    await openMenu(context);
+                  },
+                  onAddSelect: widget.onAddSelect,
+                  onRangeSelect: widget.onRangeSelect,
+                  onTapDrag: widget.onTapDrag,
+                  onPrimaryDrag: widget.onPrimaryDrag,
+                  onDragOver: widget.onDragOver,
+                )
+              },
               key: containerKey,
-              onTap: () async {
-                if (widget.openWithTap) {
-                  await openMenu(context);
-                } else {
-                  widget.onPressed?.call();
-                }
-              },
-              onLongPress: () async {
-                if (!widget.openWithTap) {
-                  await openMenu(context);
-                } else {
-                  widget.onPressed?.call();
-                }
-              },
-              child: widget.child),
+              child: widget.child,
+            ),
+          ),
         ),
       ],
     );
@@ -152,7 +214,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
 
   Future openMenu(BuildContext context) async {
     _getOffset();
-    widget.onOpened?.call();
+    widget.beforeOpened?.call();
     await widget.initData;
     await Navigator.push(
         context,
@@ -184,6 +246,6 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
           },
           fullscreenDialog: true,
           opaque: false,
-        )).whenComplete(() => widget.onClosed?.call());
+        )).whenComplete(() => widget.afterClosed?.call());
   }
 }
