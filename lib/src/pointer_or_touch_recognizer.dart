@@ -237,8 +237,8 @@ class PointerOrTouchRecognizer extends PrimaryPointerGestureRecognizer {
           invokeCallback<void>('onDragOver', () => onDragOver!);
         }
       } else if (_down?.pointer == event.pointer) {
-        if ((event.position - _down!.position).distanceSquared >
-            kTouchSlop * kTouchSlop) {
+        if ((event.position - _down!.position).distanceSquared > 49) {
+          // kTouchSlop is too accepting here
           _down = null;
         }
       }
