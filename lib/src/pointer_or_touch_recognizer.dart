@@ -4,7 +4,10 @@ import 'package:flutter/services.dart';
 
 class PointerOrTouchRecognizerFactory
     extends GestureRecognizerFactory<PointerOrTouchRecognizer> {
-  /// Called when a tap end
+  /// Called when a tap starts
+  VoidCallback? onTapStart;
+
+  /// Called when a tap ends, regardless of anything else
   VoidCallback? onTapEnd;
 
   /// Called when a short length tap is registered
@@ -43,7 +46,8 @@ class PointerOrTouchRecognizerFactory
   /// Called when pointer has been dragged over (from outside the area)
   VoidCallback? onDragOver;
   PointerOrTouchRecognizerFactory(
-      {this.onTapEnd,
+      {this.onTapStart,
+      this.onTapEnd,
       this.onTap,
       this.onShortTapHold,
       this.onMediumTapHold,
@@ -62,6 +66,7 @@ class PointerOrTouchRecognizerFactory
   @override
   void initializer(PointerOrTouchRecognizer instance) {
     instance.setKeyHandler();
+    instance.onTapStart = onTapStart;
     instance.onTapEnd = onTapEnd;
     instance.onTap = onTap;
     instance.onShortTapHold = onShortTapHold;
@@ -79,6 +84,9 @@ class PointerOrTouchRecognizerFactory
 }
 
 class PointerOrTouchRecognizer extends PrimaryPointerGestureRecognizer {
+  /// Called when a tap starts
+  VoidCallback? onTapStart;
+
   /// Called when a tap ends, regardless of anything else
   VoidCallback? onTapEnd;
 
@@ -156,6 +164,9 @@ class PointerOrTouchRecognizer extends PrimaryPointerGestureRecognizer {
       _ignoreTap = false;
       _tapReleased = false;
       if (event.kind == PointerDeviceKind.touch) {
+        if (onTapStart != null) {
+          invokeCallback<void>('onTapStart', onTapStart!);
+        }
         Future.delayed(Duration(milliseconds: 250), () {
           // Check that the same tap is still held
           if (_down?.pointer == event.pointer && !_tapReleased) {

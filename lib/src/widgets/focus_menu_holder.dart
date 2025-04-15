@@ -56,7 +56,10 @@ class FocusedMenuHolder extends StatefulWidget {
   /// Wheter to show menu on medium tap hold.
   final bool showMenuOnMediumHold;
 
-  /// Called when a tap end
+  /// Called when a tap starts
+  final VoidCallback? onTapStart;
+
+  /// Called when a tap ends
   final VoidCallback? onTapEnd;
 
   /// Called when a short length tap is registered
@@ -102,6 +105,7 @@ class FocusedMenuHolder extends StatefulWidget {
       required this.child,
       required this.menuItems,
       this.showMenuOnMediumHold = true,
+      this.onTapStart,
       this.onTapEnd,
       this.onTap,
       this.onShortTapHold,
@@ -172,7 +176,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            onTap: () {},
+            // onTap: () {},
             borderRadius: widget.childDecoration?.borderRadius
                     ?.resolve(TextDirection.ltr) ??
                 BorderRadius.circular(5),
@@ -182,6 +186,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
               behavior: HitTestBehavior.opaque,
               gestures: {
                 PointerOrTouchRecognizer: PointerOrTouchRecognizerFactory(
+                  onTapStart: widget.onTapStart,
                   onTapEnd: widget.onTapEnd,
                   onTap: widget.onTap,
                   onShortTapHold: widget.onShortTapHold,
