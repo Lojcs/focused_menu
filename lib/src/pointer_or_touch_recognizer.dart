@@ -135,7 +135,7 @@ class PointerOrTouchRecognizer extends PrimaryPointerGestureRecognizer {
       } else {
         lastKeyEvent = key;
       }
-      return true;
+      return false;
     });
   }
 
