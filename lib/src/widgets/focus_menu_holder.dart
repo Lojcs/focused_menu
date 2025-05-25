@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:focused_menu/src/models/focused_menu_item.dart';
 import 'package:focused_menu/src/widgets/focused_menu_datails.dart';
@@ -28,9 +29,9 @@ class FocusedMenuHolderController {
 /// Shows a focused menu on right click and optionally also medium tap hold.
 class FocusedMenuHolder extends StatefulWidget {
   final Widget child;
-  final double? menuItemExtent;
+  final FutureOr<double> Function()? menuItemExtent;
   final double? menuWidth;
-  final List<FocusedMenuItem> menuItems;
+  final FutureOr<List<FocusedMenuItem>> Function() menuItems;
   final bool? animateMenuItems;
   final BoxDecoration? menuBoxDecoration;
   final BoxDecoration? childDecoration;
@@ -176,7 +177,7 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
         Material(
           color: Colors.transparent,
           child: InkWell(
-            // onTap: () {},
+            onTap: widget.onTap,
             borderRadius: widget.childDecoration?.borderRadius
                     ?.resolve(TextDirection.ltr) ??
                 BorderRadius.circular(5),
@@ -221,6 +222,8 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
     _getOffset();
     widget.beforeOpened?.call();
     await widget.initData;
+    List<FocusedMenuItem> menuItems = await widget.menuItems();
+    double? menuItemExtent = await widget.menuItemExtent?.call();
     await Navigator.push(
         context,
         PageRouteBuilder(
@@ -230,14 +233,14 @@ class _FocusedMenuHolderState extends State<FocusedMenuHolder> {
             return FadeTransition(
               opacity: animation,
               child: FocusedMenuDetails(
-                itemExtent: widget.menuItemExtent,
+                itemExtent: menuItemExtent,
                 menuBoxDecoration: widget.menuBoxDecoration,
                 childDecoration: widget.openChildDecoration,
                 childLowerlay: widget.openChildLowerlay,
                 child: widget.child,
                 childOffset: childOffset,
                 childSize: childSize,
-                menuItems: widget.menuItems,
+                menuItems: menuItems,
                 blurSize: widget.blurSize,
                 menuWidth: widget.menuWidth,
                 blurBackgroundColor: widget.blurBackgroundColor,

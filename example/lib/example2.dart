@@ -21,7 +21,7 @@ class _Example2State extends State<Example2> {
             menuOffset: 0,
             controller: _avatarController,
             onTap: () {},
-            menuItems: <FocusedMenuItem>[
+            menuItems: () => <FocusedMenuItem>[
               FocusedMenuItem(
                 title: Text("This is a button"),
                 trailing: Icon(Icons.open_in_new),

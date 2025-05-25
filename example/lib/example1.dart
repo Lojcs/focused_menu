@@ -50,7 +50,7 @@ class _Example1State extends State<Example1> {
                     .map((e) => FocusedMenuHolder(
                           menuWidth: MediaQuery.of(context).size.width * 0.50,
                           blurSize: 5.0,
-                          menuItemExtent: 45,
+                          menuItemExtent: () => 45,
                           menuBoxDecoration: BoxDecoration(
                               color: Colors.grey,
                               borderRadius:
@@ -73,7 +73,7 @@ class _Example1State extends State<Example1> {
                                 onPressed: () {},
                                 color: Colors.blue),
                           ],
-                          menuItems: <FocusedMenuItem>[
+                          menuItems: () => <FocusedMenuItem>[
                             FocusedMenuItem(
                                 title: Text("Open"),
                                 trailing: Icon(Icons.open_in_new),
